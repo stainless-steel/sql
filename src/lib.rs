@@ -1,4 +1,4 @@
-//! Structured query language.
+//! A constructor of SQL statements.
 
 use std::default::Default;
 use std::{error, fmt, result};

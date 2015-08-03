@@ -5,4 +5,5 @@ authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/stainless-steel/sql"
 homepage = "https://github.com/stainless-steel/sql"
-description = "Structured query language."
+documentation = "https://stainless-steel.github.io/sql"
+description = "The package provides a constructor of SQL statements."
