@@ -54,7 +54,6 @@ impl Statement for CreateTable {
 #[cfg(test)]
 mod tests {
     use prelude::*;
-    use statement::Statement;
 
     #[test]
     fn compile() {

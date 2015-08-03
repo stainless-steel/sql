@@ -78,7 +78,6 @@ impl Statement for Select {
 #[cfg(test)]
 mod tests {
     use prelude::*;
-    use statement::Statement;
 
     #[test]
     fn compile_all() {

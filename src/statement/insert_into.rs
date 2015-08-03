@@ -65,7 +65,6 @@ impl Statement for InsertInto {
 #[cfg(test)]
 mod tests {
     use prelude::*;
-    use statement::Statement;
 
     #[test]
     fn compile() {
