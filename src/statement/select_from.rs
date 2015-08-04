@@ -7,7 +7,7 @@ use {Buffer, Result};
 pub struct SelectFrom {
     table: Option<String>,
     columns: Option<Vec<String>>,
-    constraints: Option<Vec<Box<Expression>>>,
+    conditions: Option<Vec<Box<Expression>>>,
     limit: Option<usize>,
 }
 
@@ -32,9 +32,9 @@ impl SelectFrom {
         self
     }
 
-    /// Add a constraint.
+    /// Add a condition.
     pub fn so_that<T: 'static + Expression>(mut self, value: T) -> Self {
-        push!(self.constraints, Box::new(value));
+        push!(self.conditions, Box::new(value));
         self
     }
 
@@ -62,12 +62,12 @@ impl Statement for SelectFrom {
         }
         buffer.push("FROM");
         buffer.push(format!("`{}`", some!(self, table)));
-        if let &Some(ref constraints) = &self.constraints {
+        if let &Some(ref conditions) = &self.conditions {
             buffer.push("WHERE");
             buffer.push({
                 let mut buffer = Buffer::new();
-                for constraint in constraints {
-                    buffer.push(try!(constraint.compile()));
+                for condition in conditions {
+                    buffer.push(try!(condition.compile()));
                 }
                 buffer.join(" AND ")
             });

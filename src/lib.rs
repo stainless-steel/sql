@@ -109,10 +109,10 @@ macro_rules! ok(
 );
 
 macro_rules! some(
-    ($from:ident, $what:ident) => (
-        match $from.$what {
+    ($this:ident, $field:ident) => (
+        match $this.$field {
             Some(ref value) => value,
-            _ => raise!(concat!("expected `", stringify!($what), "` to be set")),
+            _ => raise!(concat!("expected “", stringify!($field), "” to be set")),
         }
     );
 );
