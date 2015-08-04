@@ -1,13 +1,14 @@
 use definition::Definition;
 use expression::{self, Expression};
 use operation;
-use {Result, Type};
+use {Buffer, Result, Type};
 
 /// A column definition.
 #[derive(Clone, Debug, Default)]
 pub struct Column {
     name: Option<String>,
     kind: Option<Type>,
+    not_null: Option<()>,
 }
 
 impl Column {
@@ -22,17 +23,28 @@ impl Column {
         self.kind = Some(value);
         self
     }
+
+    /// Mark that it should not be null.
+    pub fn not_null(mut self) -> Self {
+        self.not_null = Some(());
+        self
+    }
 }
 
 impl Definition for Column {
     fn compile(&self) -> Result<String> {
-        let kind = match some!(self, kind) {
+        let mut buffer = Buffer::new();
+        buffer.push(format!("`{}`", some!(self, name)));
+        buffer.push(match some!(self, kind) {
             &Type::Binary => "BLOB",
             &Type::Float => "REAL",
             &Type::Integer => "INTEGER",
             &Type::String => "TEXT",
-        };
-        Ok(format!("`{}` {}", some!(self, name), kind))
+        });
+        if let Some(_) = self.not_null {
+            buffer.push("NOT NULL");
+        }
+        Ok(buffer.join(" "))
     }
 }
 
@@ -45,5 +57,17 @@ impl Expression for Column {
 impl operation::Like for Column {
     fn like<A: ToString>(self, value: A) -> expression::Like<Self> {
         expression::Like(self, value.to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use definition::Definition;
+    use prelude::*;
+
+    #[test]
+    fn not_null() {
+        let column = column().name("foo").kind(Type::Float).not_null();
+        assert_eq!(Definition::compile(&column).unwrap(), "`foo` REAL NOT NULL");
     }
 }

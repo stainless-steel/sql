@@ -54,7 +54,7 @@ impl Buffer {
 
     fn join(self, delimiter: &str) -> String {
         let mut result = String::new();
-        for (i, ref chunk) in self.0.iter().enumerate() {
+        for (i, chunk) in self.0.iter().enumerate() {
             if i > 0 {
                 result.push_str(delimiter)
             }

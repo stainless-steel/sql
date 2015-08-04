@@ -19,7 +19,7 @@ impl CreateTable {
         self
     }
 
-    /// Mark as applicable only if the table does not exist.
+    /// Mark that it should be applied only if the table does not exist.
     pub fn if_not_exists(mut self) -> Self {
         self.if_not_exists = Some(());
         self
