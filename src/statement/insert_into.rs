@@ -4,29 +4,51 @@ use {Buffer, Result};
 /// An `INSERT INTO` statement.
 #[derive(Clone, Debug, Default)]
 pub struct InsertInto {
-    columns: Option<Vec<String>>,
-    multiplex: Option<usize>,
     table: Option<String>,
+    columns: Option<Vec<String>>,
+    multiple: Option<usize>,
 }
 
 impl InsertInto {
+    /// Set the table.
+    pub fn table<T: ToString>(mut self, value: T) -> Self {
+        self.table = Some(value.to_string());
+        self
+    }
+
     /// Add a column.
     pub fn column<T: ToString>(mut self, value: T) -> Self {
-        let mut columns = self.columns.take().unwrap_or_else(|| vec![]);
-        columns.push(value.to_string());
-        self.columns = Some(columns);
+        match self.columns {
+            Some(ref mut columns) => {
+                columns.push(value.to_string());
+            },
+            _ => {
+                self.columns = Some(vec![]);
+                return self.column(value);
+            },
+        }
+        self
+    }
+
+    /// Add multiple columns.
+    pub fn columns<T: ToString>(mut self, values: &[T]) -> Self {
+        match self.columns {
+            Some(ref mut columns) => {
+                for value in values {
+                    columns.push(value.to_string());
+                }
+            },
+            _ => {
+                self.columns = Some(vec![]);
+                return self.columns(values);
+            },
+        }
         self
     }
 
     /// Extend the statement for inserting multiple rows at once.
-    pub fn multiplex(mut self, value: usize) -> Self {
-        self.multiplex = Some(value);
-        self
-    }
-
-    /// Set the table.
-    pub fn table<T: ToString>(mut self, value: T) -> Self {
-        self.table = Some(value.to_string());
+    pub fn multiple(mut self, value: usize) -> Self {
+        self.multiple = Some(value);
         self
     }
 }
@@ -51,7 +73,7 @@ impl Statement for InsertInto {
                 }
                 let one = format!("({})", buffer.join(", "));
                 let mut buffer = Buffer::new();
-                for _ in 0..self.multiplex.unwrap_or(1) {
+                for _ in 0..self.multiple.unwrap_or(1) {
                     buffer.push(&one);
                 }
                 buffer
@@ -67,10 +89,10 @@ mod tests {
     use prelude::*;
 
     #[test]
-    fn compile() {
-        let statement = insert_into().table("foo").column("bar").column("baz").multiplex(3);
+    fn multiple() {
+        let statement = insert_into().table("foo").columns(&["bar", "baz"]).multiple(3);
 
-        assert_eq!(&statement.compile().unwrap(),
+        assert_eq!(statement.compile().unwrap(),
                    "INSERT INTO `foo` (`bar`, `baz`) VALUES (?, ?), (?, ?), (?, ?)");
     }
 }

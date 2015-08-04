@@ -5,38 +5,66 @@ use {Buffer, Result};
 /// A `SELECT` statement.
 #[derive(Debug, Default)]
 pub struct Select {
-    columns: Option<Vec<String>>,
-    limit: Option<usize>,
     table: Option<String>,
-    whereins: Option<Vec<Box<Expression>>>,
+    columns: Option<Vec<String>>,
+    constraints: Option<Vec<Box<Expression>>>,
+    limit: Option<usize>,
 }
 
 impl Select {
+    /// Set the table.
+    pub fn table<T: ToString>(mut self, value: T) -> Self {
+        self.table = Some(value.to_string());
+        self
+    }
+
     /// Add a column.
     pub fn column<T: ToString>(mut self, value: T) -> Self {
-        let mut columns = self.columns.take().unwrap_or_else(|| vec![]);
-        columns.push(value.to_string());
-        self.columns = Some(columns);
+        match self.columns {
+            Some(ref mut columns) => {
+                columns.push(value.to_string());
+            },
+            _ => {
+                self.columns = Some(vec![]);
+                return self.column(value);
+            },
+        }
+        self
+    }
+
+    /// Add multiple columns.
+    pub fn columns<T: ToString>(mut self, values: &[T]) -> Self {
+        match self.columns {
+            Some(ref mut columns) => {
+                for value in values {
+                    columns.push(value.to_string());
+                }
+            },
+            _ => {
+                self.columns = Some(vec![]);
+                return self.columns(values);
+            },
+        }
         self
     }
 
     /// Add a constraint.
     pub fn wherein<T: 'static + Expression>(mut self, value: T) -> Self {
-        let mut whereins = self.whereins.take().unwrap_or_else(|| vec![]);
-        whereins.push(Box::new(value));
-        self.whereins = Some(whereins);
+        match self.constraints {
+            Some(ref mut constraints) => {
+                constraints.push(Box::new(value));
+            },
+            _ => {
+                self.constraints = Some(vec![]);
+                return self.wherein(value);
+            },
+        }
         self
     }
 
     /// Set the limit.
     pub fn limit(mut self, value: usize) -> Self {
         self.limit = Some(value);
-        self
-    }
-
-    /// Set the table.
-    pub fn table<T: ToString>(mut self, value: T) -> Self {
-        self.table = Some(value.to_string());
         self
     }
 }
@@ -58,11 +86,11 @@ impl Statement for Select {
         }
         buffer.push("FROM");
         buffer.push(format!("`{}`", some!(self, table)));
-        if let &Some(ref whereins) = &self.whereins {
+        if let &Some(ref constraints) = &self.constraints {
             buffer.push("WHERE");
             buffer.push({
                 let mut buffer = Buffer::new();
-                for wherein in whereins {
+                for wherein in constraints {
                     buffer.push(try!(wherein.compile()));
                 }
                 buffer.join(" AND ")
@@ -80,26 +108,26 @@ mod tests {
     use prelude::*;
 
     #[test]
-    fn compile_all() {
+    fn all() {
         let statement = select().table("foo");
-        assert_eq!(&statement.compile().unwrap(), "SELECT * FROM `foo`");
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo`");
     }
 
     #[test]
-    fn compile_limit() {
+    fn columns() {
+        let statement = select().table("foo").columns(&["bar", "baz"]);
+        assert_eq!(statement.compile().unwrap(), "SELECT `bar`, `baz` FROM `foo`");
+    }
+
+    #[test]
+    fn limit() {
         let statement = select().table("foo").limit(10);
-        assert_eq!(&statement.compile().unwrap(), "SELECT * FROM `foo` LIMIT 10");
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` LIMIT 10");
     }
 
     #[test]
-    fn compile_like() {
+    fn like() {
         let statement = select().table("foo").wherein(column().name("bar").like("%baz%"));
-        assert_eq!(&statement.compile().unwrap(), "SELECT * FROM `foo` WHERE `bar` LIKE '%baz%'");
-    }
-
-    #[test]
-    fn compile_subset() {
-        let statement = select().table("foo").column("bar").column("baz");
-        assert_eq!(&statement.compile().unwrap(), "SELECT `bar`, `baz` FROM `foo`");
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` WHERE `bar` LIKE '%baz%'");
     }
 }

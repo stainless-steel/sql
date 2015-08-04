@@ -5,17 +5,15 @@ use {Buffer, Result};
 /// A `CREATE TABLE` statement.
 #[derive(Clone, Debug, Default)]
 pub struct CreateTable {
-    columns: Option<Vec<Column>>,
-    if_not_exists: Option<()>,
     name: Option<String>,
+    if_not_exists: Option<()>,
+    columns: Option<Vec<Column>>,
 }
 
 impl CreateTable {
-    /// Add a column.
-    pub fn column(mut self, column: Column) -> Self {
-        let mut columns = self.columns.take().unwrap_or_else(|| vec![]);
-        columns.push(column);
-        self.columns = Some(columns);
+    /// Set the name.
+    pub fn name<T: ToString>(mut self, value: T) -> Self {
+        self.name = Some(value.to_string());
         self
     }
 
@@ -25,9 +23,33 @@ impl CreateTable {
         self
     }
 
-    /// Set the name.
-    pub fn name<T: ToString>(mut self, value: T) -> Self {
-        self.name = Some(value.to_string());
+    /// Add a column.
+    pub fn column(mut self, value: Column) -> Self {
+        match self.columns {
+            Some(ref mut columns) => {
+                columns.push(value);
+            },
+            _ => {
+                self.columns = Some(vec![]);
+                return self.column(value);
+            },
+        }
+        self
+    }
+
+    /// Add multiple columns.
+    pub fn columns(mut self, values: &[Column]) -> Self {
+        match self.columns {
+            Some(ref mut columns) => {
+                for value in values {
+                    columns.push(value.clone());
+                }
+            },
+            _ => {
+                self.columns = Some(vec![]);
+                return self.columns(values);
+            },
+        }
         self
     }
 }
@@ -56,13 +78,13 @@ mod tests {
     use prelude::*;
 
     #[test]
-    fn compile() {
-        let statement = create_table().name("foo")
-                                      .if_not_exists()
-                                      .column(column().name("bar").kind(Type::Float))
-                                      .column(column().name("baz").kind(Type::String));
+    fn if_not_exists() {
+        let statement = create_table().name("foo").if_not_exists().columns(&[
+            column().name("bar").kind(Type::Float),
+            column().name("baz").kind(Type::String),
+        ]);
 
-        assert_eq!(&statement.compile().unwrap(),
+        assert_eq!(statement.compile().unwrap(),
                    "CREATE TABLE IF NOT EXISTS `foo` (`bar` REAL, `baz` TEXT)");
     }
 }
