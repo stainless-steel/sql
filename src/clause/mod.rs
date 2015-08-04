@@ -15,8 +15,8 @@ pub mod order_by;
 
 pub use self::order_by::{OrderBy, Order, Orderable};
 
-/// The language.
-pub mod language {
+/// Helper functions.
+pub mod helper {
     use expression::Expression;
     use super::OrderBy;
 

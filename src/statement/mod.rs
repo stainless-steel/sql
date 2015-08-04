@@ -16,8 +16,8 @@ pub use self::create_table::CreateTable;
 pub use self::insert_into::InsertInto;
 pub use self::select_from::SelectFrom;
 
-/// The language.
-pub mod language {
+/// Helper functions.
+pub mod helper {
     use super::{CreateTable, InsertInto, SelectFrom};
 
     /// Create a `CREATE TABLE` statement.

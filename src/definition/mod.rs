@@ -12,8 +12,8 @@ mod column;
 
 pub use self::column::Column;
 
-/// The language.
-pub mod language {
+/// Helper functions.
+pub mod helper {
     use super::Column;
 
     /// Create a column definition.

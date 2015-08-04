@@ -2,9 +2,9 @@
 
 pub use Type;
 
-pub use clause::language::*;
-pub use definition::language::*;
-pub use statement::language::*;
+pub use clause::helper::*;
+pub use definition::helper::*;
+pub use statement::helper::*;
 
 pub use clause::Clause;
 pub use clause::Orderable;
