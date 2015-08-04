@@ -93,6 +93,19 @@ macro_rules! some(
     );
 );
 
+macro_rules! push(
+    ($this:ident.$field:ident, $value:expr) => (
+        match $this.$field {
+            Some(ref mut collection) => {
+                collection.push($value);
+            },
+            _ => {
+                $this.$field = Some(vec![$value]);
+            },
+        }
+    );
+);
+
 pub mod definition;
 pub mod expression;
 pub mod operation;

@@ -18,30 +18,14 @@ impl InsertInto {
 
     /// Add a column.
     pub fn column<T: ToString>(mut self, value: T) -> Self {
-        match self.columns {
-            Some(ref mut columns) => {
-                columns.push(value.to_string());
-            },
-            _ => {
-                self.columns = Some(vec![]);
-                return self.column(value);
-            },
-        }
+        push!(self.columns, value.to_string());
         self
     }
 
     /// Add multiple columns.
     pub fn columns<T: ToString>(mut self, values: &[T]) -> Self {
-        match self.columns {
-            Some(ref mut columns) => {
-                for value in values {
-                    columns.push(value.to_string());
-                }
-            },
-            _ => {
-                self.columns = Some(vec![]);
-                return self.columns(values);
-            },
+        for value in values {
+            push!(self.columns, value.to_string());
         }
         self
     }

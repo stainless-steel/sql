@@ -25,30 +25,14 @@ impl CreateTable {
 
     /// Add a column.
     pub fn column(mut self, value: Column) -> Self {
-        match self.columns {
-            Some(ref mut columns) => {
-                columns.push(value);
-            },
-            _ => {
-                self.columns = Some(vec![]);
-                return self.column(value);
-            },
-        }
+        push!(self.columns, value);
         self
     }
 
     /// Add multiple columns.
     pub fn columns(mut self, values: &[Column]) -> Self {
-        match self.columns {
-            Some(ref mut columns) => {
-                for value in values {
-                    columns.push(value.clone());
-                }
-            },
-            _ => {
-                self.columns = Some(vec![]);
-                return self.columns(values);
-            },
+        for value in values {
+            push!(self.columns, value.clone());
         }
         self
     }

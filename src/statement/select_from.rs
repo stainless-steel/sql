@@ -20,45 +20,21 @@ impl SelectFrom {
 
     /// Add a column.
     pub fn column<T: ToString>(mut self, value: T) -> Self {
-        match self.columns {
-            Some(ref mut columns) => {
-                columns.push(value.to_string());
-            },
-            _ => {
-                self.columns = Some(vec![]);
-                return self.column(value);
-            },
-        }
+        push!(self.columns, value.to_string());
         self
     }
 
     /// Add multiple columns.
     pub fn columns<T: ToString>(mut self, values: &[T]) -> Self {
-        match self.columns {
-            Some(ref mut columns) => {
-                for value in values {
-                    columns.push(value.to_string());
-                }
-            },
-            _ => {
-                self.columns = Some(vec![]);
-                return self.columns(values);
-            },
+        for value in values {
+            push!(self.columns, value.to_string());
         }
         self
     }
 
     /// Add a constraint.
     pub fn wherein<T: 'static + Expression>(mut self, value: T) -> Self {
-        match self.constraints {
-            Some(ref mut constraints) => {
-                constraints.push(Box::new(value));
-            },
-            _ => {
-                self.constraints = Some(vec![]);
-                return self.wherein(value);
-            },
-        }
+        push!(self.constraints, Box::new(value));
         self
     }
 
