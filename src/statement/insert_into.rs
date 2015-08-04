@@ -41,11 +41,11 @@ impl Statement for InsertInto {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
         buffer.push("INSERT INTO");
-        buffer.push(format!("`{}`", some!(self, table)));
+        buffer.push(format!("`{}`", some!(self.table)));
         buffer.push({
             let names = {
                 let mut buffer = Buffer::new();
-                for column in some!(self, columns) {
+                for column in some!(self.columns) {
                     buffer.push(format!("`{}`", column));
                 }
                 buffer

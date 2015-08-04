@@ -45,10 +45,10 @@ impl Statement for CreateTable {
         if let Some(_) = self.if_not_exists {
              buffer.push("IF NOT EXISTS");
         }
-        buffer.push(format!("`{}`", some!(self, name)));
+        buffer.push(format!("`{}`", some!(self.name)));
         buffer.push({
             let mut buffer = Buffer::new();
-            for column in some!(self, columns) {
+            for column in some!(self.columns) {
                 buffer.push(try!(column.compile()));
             }
             format!("({})", buffer.join(", "))

@@ -58,8 +58,8 @@ impl Column {
 impl Definition for Column {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
-        buffer.push(format!("`{}`", some!(self, name)));
-        buffer.push(match some!(self, kind) {
+        buffer.push(format!("`{}`", some!(self.name)));
+        buffer.push(match some!(self.kind) {
             &Type::Binary => "BLOB",
             &Type::Float => "REAL",
             &Type::Integer => "INTEGER",
@@ -74,7 +74,7 @@ impl Definition for Column {
 
 impl Expression for Column {
     fn compile(&self) -> Result<String> {
-        Ok(format!("`{}`", some!(self, name)))
+        Ok(format!("`{}`", some!(self.name)))
     }
 }
 

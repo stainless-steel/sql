@@ -24,7 +24,6 @@
 //!                                    .compile().unwrap());
 //! ```
 
-use std::default::Default;
 use std::{error, fmt, result};
 
 struct Buffer(Vec<String>);
@@ -109,7 +108,7 @@ macro_rules! ok(
 );
 
 macro_rules! some(
-    ($this:ident, $field:ident) => (
+    ($this:ident.$field:ident) => (
         match $this.$field {
             Some(ref value) => value,
             _ => raise!(concat!("expected “", stringify!($field), "” to be set")),
@@ -130,33 +129,10 @@ macro_rules! push(
     );
 );
 
+pub mod clause;
 pub mod definition;
 pub mod expression;
 pub mod operation;
 pub mod statement;
 
 pub mod prelude;
-
-/// Create a column definition.
-#[inline]
-pub fn column<T: ToString>(name: T) -> definition::Column {
-    definition::Column::default().name(name)
-}
-
-/// Create a `CREATE TABLE` statement.
-#[inline]
-pub fn create_table<T: ToString>(name: T) -> statement::CreateTable {
-    statement::CreateTable::default().name(name)
-}
-
-/// Create an `INSERT INTO` statement.
-#[inline]
-pub fn insert_into<T: ToString>(table: T) -> statement::InsertInto {
-    statement::InsertInto::default().table(table)
-}
-
-/// Create a `SELECT FROM` statement.
-#[inline]
-pub fn select_from<T: ToString>(table: T) -> statement::SelectFrom {
-    statement::SelectFrom::default().table(table)
-}

@@ -2,10 +2,11 @@
 
 pub use Type;
 
-pub use column;
-pub use create_table;
-pub use insert_into;
-pub use select_from;
+pub use clause::language::*;
+pub use definition::language::*;
+pub use statement::language::*;
 
+pub use clause::Clause;
+pub use clause::Orderable;
 pub use operation::Like;
 pub use statement::Statement;

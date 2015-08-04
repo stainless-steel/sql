@@ -1,3 +1,4 @@
+use clause::{Clause, OrderBy};
 use expression::Expression;
 use statement::Statement;
 use {Buffer, Result};
@@ -8,6 +9,7 @@ pub struct SelectFrom {
     table: Option<String>,
     columns: Option<Vec<String>>,
     conditions: Option<Vec<Box<Expression>>>,
+    order_by: Option<OrderBy>,
     limit: Option<usize>,
 }
 
@@ -38,6 +40,15 @@ impl SelectFrom {
         self
     }
 
+    /// Add an order.
+    pub fn order_by<T: 'static + Expression>(mut self, value: T) -> Self {
+        self.order_by = Some(match self.order_by.take() {
+            Some(order_by) => order_by.and(value),
+            _ => OrderBy::default().and(value),
+        });
+        self
+    }
+
     /// Set the limit.
     pub fn limit(mut self, value: usize) -> Self {
         self.limit = Some(value);
@@ -61,7 +72,7 @@ impl Statement for SelectFrom {
             buffer.push("*");
         }
         buffer.push("FROM");
-        buffer.push(format!("`{}`", some!(self, table)));
+        buffer.push(format!("`{}`", some!(self.table)));
         if let &Some(ref conditions) = &self.conditions {
             buffer.push("WHERE");
             buffer.push({
@@ -71,6 +82,9 @@ impl Statement for SelectFrom {
                 }
                 buffer.join(" AND ")
             });
+        }
+        if let Some(ref order_by) = self.order_by {
+            buffer.push(try!(order_by.compile()));
         }
         if let Some(limit) = self.limit {
             buffer.push(format!("LIMIT {}", limit));
@@ -96,14 +110,33 @@ mod tests {
     }
 
     #[test]
-    fn limit() {
-        let statement = select_from("foo").limit(10);
-        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` LIMIT 10");
-    }
-
-    #[test]
     fn like() {
         let statement = select_from("foo").so_that(column("bar").like("%baz%"));
         assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` WHERE `bar` LIKE '%baz%'");
+    }
+
+    #[test]
+    fn order() {
+        let statement = select_from("foo").order_by("bar");
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY bar");
+
+        let statement = select_from("foo").order_by(column("bar"));
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar`");
+
+        let statement = select_from("foo").order_by(column("bar").ascending());
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar` ASC");
+
+        let statement = select_from("foo").order_by(column("bar").descending());
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar` DESC");
+
+        let statement = select_from("foo").order_by(column("bar"))
+                                          .order_by(column("baz").descending());
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar`, `baz` DESC");
+    }
+
+    #[test]
+    fn limit() {
+        let statement = select_from("foo").limit(10);
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` LIMIT 10");
     }
 }

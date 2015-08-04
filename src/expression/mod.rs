@@ -10,12 +10,27 @@ pub trait Expression: Debug {
     fn compile(&self) -> Result<String>;
 }
 
-/// A `LIKE` expression.
-#[derive(Clone, Debug)]
-pub struct Like<T: Expression>(pub T, pub String);
-
-impl<T: Expression> Expression for Like<T> {
+impl<'l> Expression for &'l str {
+    #[inline]
     fn compile(&self) -> Result<String> {
-        Ok(format!("{} LIKE '{}'", try!(self.0.compile()), self.1))
+        Ok(self.to_string())
     }
 }
+
+impl Expression for String {
+    #[inline]
+    fn compile(&self) -> Result<String> {
+        Ok(self.clone())
+    }
+}
+
+impl Expression for usize {
+    #[inline]
+    fn compile(&self) -> Result<String> {
+        Ok(self.to_string())
+    }
+}
+
+mod like;
+
+pub use self::like::Like;
