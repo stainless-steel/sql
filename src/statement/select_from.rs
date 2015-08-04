@@ -33,7 +33,7 @@ impl SelectFrom {
     }
 
     /// Add a constraint.
-    pub fn wherein<T: 'static + Expression>(mut self, value: T) -> Self {
+    pub fn so_that<T: 'static + Expression>(mut self, value: T) -> Self {
         push!(self.constraints, Box::new(value));
         self
     }
@@ -66,8 +66,8 @@ impl Statement for SelectFrom {
             buffer.push("WHERE");
             buffer.push({
                 let mut buffer = Buffer::new();
-                for wherein in constraints {
-                    buffer.push(try!(wherein.compile()));
+                for constraint in constraints {
+                    buffer.push(try!(constraint.compile()));
                 }
                 buffer.join(" AND ")
             });
@@ -103,7 +103,7 @@ mod tests {
 
     #[test]
     fn like() {
-        let statement = select_from("foo").wherein(column("bar").like("%baz%"));
+        let statement = select_from("foo").so_that(column("bar").like("%baz%"));
         assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` WHERE `bar` LIKE '%baz%'");
     }
 }
