@@ -24,6 +24,30 @@ impl Column {
         self
     }
 
+    /// Set the type to `Binary`.
+    #[inline]
+    pub fn binary(self) -> Self {
+        self.kind(Type::Binary)
+    }
+
+    /// Set the type to `Float`.
+    #[inline]
+    pub fn float(self) -> Self {
+        self.kind(Type::Float)
+    }
+
+    /// Set the type to `Integer`.
+    #[inline]
+    pub fn integer(self) -> Self {
+        self.kind(Type::Integer)
+    }
+
+    /// Set the type to `String`.
+    #[inline]
+    pub fn string(self) -> Self {
+        self.kind(Type::String)
+    }
+
     /// Mark that it should not be null.
     pub fn not_null(mut self) -> Self {
         self.not_null = Some(());
