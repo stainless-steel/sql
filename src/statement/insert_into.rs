@@ -90,7 +90,7 @@ mod tests {
 
     #[test]
     fn batch() {
-        let statement = insert_into().table("foo").columns(&["bar", "baz"]).batch(3);
+        let statement = insert_into("foo").columns(&["bar", "baz"]).batch(3);
 
         assert_eq!(statement.compile().unwrap(),
                    "INSERT INTO `foo` (`bar`, `baz`) VALUES (?, ?), (?, ?), (?, ?)");

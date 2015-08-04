@@ -79,9 +79,8 @@ mod tests {
 
     #[test]
     fn if_not_exists() {
-        let statement = create_table().name("foo").if_not_exists().columns(&[
-            column().name("bar").kind(Type::Float),
-            column().name("baz").kind(Type::String),
+        let statement = create_table("foo").if_not_exists().columns(&[
+            column("bar").kind(Type::Float), column("baz").kind(Type::String),
         ]);
 
         assert_eq!(statement.compile().unwrap(),

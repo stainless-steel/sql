@@ -102,24 +102,24 @@ pub mod prelude;
 
 /// Create a column definition.
 #[inline]
-pub fn column() -> definition::Column {
-    Default::default()
+pub fn column<T: ToString>(name: T) -> definition::Column {
+    definition::Column::default().name(name)
 }
 
 /// Create a `CREATE TABLE` statement.
 #[inline]
-pub fn create_table() -> statement::CreateTable {
-    Default::default()
+pub fn create_table<T: ToString>(name: T) -> statement::CreateTable {
+    statement::CreateTable::default().name(name)
 }
 
 /// Create an `INSERT INTO` statement.
 #[inline]
-pub fn insert_into() -> statement::InsertInto {
-    Default::default()
+pub fn insert_into<T: ToString>(table: T) -> statement::InsertInto {
+    statement::InsertInto::default().table(table)
 }
 
-/// Create a `SELECT` statement.
+/// Create a `SELECT FROM` statement.
 #[inline]
-pub fn select() -> statement::Select {
-    Default::default()
+pub fn select_from<T: ToString>(table: T) -> statement::SelectFrom {
+    statement::SelectFrom::default().table(table)
 }

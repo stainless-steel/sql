@@ -2,16 +2,16 @@ use expression::Expression;
 use statement::Statement;
 use {Buffer, Result};
 
-/// A `SELECT` statement.
+/// A `SELECT FROM` statement.
 #[derive(Debug, Default)]
-pub struct Select {
+pub struct SelectFrom {
     table: Option<String>,
     columns: Option<Vec<String>>,
     constraints: Option<Vec<Box<Expression>>>,
     limit: Option<usize>,
 }
 
-impl Select {
+impl SelectFrom {
     /// Set the table.
     pub fn table<T: ToString>(mut self, value: T) -> Self {
         self.table = Some(value.to_string());
@@ -69,7 +69,7 @@ impl Select {
     }
 }
 
-impl Statement for Select {
+impl Statement for SelectFrom {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
         buffer.push("SELECT");
@@ -109,25 +109,25 @@ mod tests {
 
     #[test]
     fn all() {
-        let statement = select().table("foo");
+        let statement = select_from("foo");
         assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo`");
     }
 
     #[test]
     fn columns() {
-        let statement = select().table("foo").columns(&["bar", "baz"]);
+        let statement = select_from("foo").columns(&["bar", "baz"]);
         assert_eq!(statement.compile().unwrap(), "SELECT `bar`, `baz` FROM `foo`");
     }
 
     #[test]
     fn limit() {
-        let statement = select().table("foo").limit(10);
+        let statement = select_from("foo").limit(10);
         assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` LIMIT 10");
     }
 
     #[test]
     fn like() {
-        let statement = select().table("foo").wherein(column().name("bar").like("%baz%"));
+        let statement = select_from("foo").wherein(column("bar").like("%baz%"));
         assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` WHERE `bar` LIKE '%baz%'");
     }
 }

@@ -67,7 +67,7 @@ mod tests {
 
     #[test]
     fn not_null() {
-        let column = column().name("foo").kind(Type::Float).not_null();
+        let column = column("foo").kind(Type::Float).not_null();
         assert_eq!(Definition::compile(&column).unwrap(), "`foo` REAL NOT NULL");
     }
 }
