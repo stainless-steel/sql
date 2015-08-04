@@ -18,24 +18,23 @@ pub use self::select_from::SelectFrom;
 
 /// The language.
 pub mod language {
-    use std::default::Default;
     use super::{CreateTable, InsertInto, SelectFrom};
 
     /// Create a `CREATE TABLE` statement.
     #[inline]
     pub fn create_table<T: ToString>(name: T) -> CreateTable {
-        CreateTable::default().name(name)
+        CreateTable::new(name)
     }
 
     /// Create an `INSERT INTO` statement.
     #[inline]
     pub fn insert_into<T: ToString>(table: T) -> InsertInto {
-        InsertInto::default().table(table)
+        InsertInto::new(table)
     }
 
     /// Create a `SELECT FROM` statement.
     #[inline]
     pub fn select_from<T: ToString>(table: T) -> SelectFrom {
-        SelectFrom::default().table(table)
+        SelectFrom::new(table)
     }
 }

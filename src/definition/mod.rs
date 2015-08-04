@@ -14,12 +14,11 @@ pub use self::column::Column;
 
 /// The language.
 pub mod language {
-    use std::default::Default;
     use super::Column;
 
     /// Create a column definition.
     #[inline]
     pub fn column<T: ToString>(name: T) -> Column {
-        Column::default().name(name)
+        Column::new(name)
     }
 }

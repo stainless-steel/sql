@@ -12,6 +12,12 @@ pub struct Column {
 }
 
 impl Column {
+    /// Create a column definition.
+    #[inline]
+    pub fn new<T: ToString>(name: T) -> Self {
+        Column::default().name(name)
+    }
+
     /// Set the name.
     pub fn name<T: ToString>(mut self, value: T) -> Self {
         self.name = Some(value.to_string());

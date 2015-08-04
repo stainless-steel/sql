@@ -11,6 +11,12 @@ pub struct CreateTable {
 }
 
 impl CreateTable {
+    /// Create a `CREATE TABLE` statement.
+    #[inline]
+    pub fn new<T: ToString>(name: T) -> Self {
+        CreateTable::default().name(name)
+    }
+
     /// Set the name.
     pub fn name<T: ToString>(mut self, value: T) -> Self {
         self.name = Some(value.to_string());

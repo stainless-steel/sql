@@ -10,6 +10,12 @@ pub struct InsertInto {
 }
 
 impl InsertInto {
+    /// Create an `INSERT INTO` statement.
+    #[inline]
+    pub fn new<T: ToString>(table: T) -> Self {
+        InsertInto::default().table(table)
+    }
+
     /// Set the table.
     pub fn table<T: ToString>(mut self, value: T) -> Self {
         self.table = Some(value.to_string());

@@ -18,12 +18,11 @@ pub use self::order_by::{OrderBy, Order, Orderable};
 /// The language.
 pub mod language {
     use expression::Expression;
-    use std::default::Default;
     use super::OrderBy;
 
     /// Create an `ORDER BY` clause.
     #[inline]
     pub fn order_by<T: 'static + Expression>(order: T) -> OrderBy {
-        OrderBy::default().and(order)
+        OrderBy::new(order)
     }
 }

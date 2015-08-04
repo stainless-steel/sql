@@ -48,6 +48,12 @@ pub trait Orderable: Debug where Self: Sized {
 }
 
 impl OrderBy {
+    /// Create an `ORDER BY` clause.
+    #[inline]
+    pub fn new<T: 'static + Expression>(order: T) -> OrderBy {
+        OrderBy::default().and(order)
+    }
+
     /// Add an order.
     pub fn and<T: 'static + Expression>(mut self, value: T) -> Self {
         push!(self.parts, Box::new(value));
