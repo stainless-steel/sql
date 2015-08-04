@@ -6,7 +6,7 @@ use {Buffer, Result};
 pub struct InsertInto {
     table: Option<String>,
     columns: Option<Vec<String>>,
-    multiple: Option<usize>,
+    batch: Option<usize>,
 }
 
 impl InsertInto {
@@ -46,9 +46,9 @@ impl InsertInto {
         self
     }
 
-    /// Extend the statement for inserting multiple rows at once.
-    pub fn multiple(mut self, value: usize) -> Self {
-        self.multiple = Some(value);
+    /// Extend for inserting multiple rows at once.
+    pub fn batch(mut self, value: usize) -> Self {
+        self.batch = Some(value);
         self
     }
 }
@@ -73,7 +73,7 @@ impl Statement for InsertInto {
                 }
                 let one = format!("({})", buffer.join(", "));
                 let mut buffer = Buffer::new();
-                for _ in 0..self.multiple.unwrap_or(1) {
+                for _ in 0..self.batch.unwrap_or(1) {
                     buffer.push(&one);
                 }
                 buffer
@@ -89,8 +89,8 @@ mod tests {
     use prelude::*;
 
     #[test]
-    fn multiple() {
-        let statement = insert_into().table("foo").columns(&["bar", "baz"]).multiple(3);
+    fn batch() {
+        let statement = insert_into().table("foo").columns(&["bar", "baz"]).batch(3);
 
         assert_eq!(statement.compile().unwrap(),
                    "INSERT INTO `foo` (`bar`, `baz`) VALUES (?, ?), (?, ?), (?, ?)");
