@@ -124,39 +124,41 @@ impl<T: Expression> Expression for (T, Option<Order>) {
 
 #[cfg(test)]
 mod tests {
+    use clause::Clause;
     use prelude::*;
+    use super::OrderBy;
 
     #[test]
     fn ascending() {
-        let clause = order_by("foo".ascending());
+        let clause = OrderBy::new("foo".ascending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo ASC");
 
-        let clause = order_by(column("foo").ascending());
+        let clause = OrderBy::new(column("foo").ascending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` ASC");
     }
 
     #[test]
     fn descending() {
-        let clause = order_by("foo".descending());
+        let clause = OrderBy::new("foo".descending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo DESC");
 
-        let clause = order_by(column("foo").descending());
+        let clause = OrderBy::new(column("foo").descending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` DESC");
     }
 
     #[test]
     fn unspecified() {
-        let clause = order_by("foo");
+        let clause = OrderBy::new("foo");
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo");
 
-        let clause = order_by(column("foo"));
+        let clause = OrderBy::new(column("foo"));
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo`");
     }
 
     #[test]
     fn and() {
-        let clause = order_by("foo").and(column("bar").ascending())
-                                    .and("baz".to_string().descending());
+        let clause = OrderBy::new("foo").and(column("bar").ascending())
+                                        .and("baz".to_string().descending());
 
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo, `bar` ASC, baz DESC");
     }
