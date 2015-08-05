@@ -1,4 +1,4 @@
-use statement::Statement;
+use grammar::Statement;
 use {Buffer, Result};
 
 /// An `INSERT INTO` statement.

@@ -2,9 +2,8 @@
 
 use std::fmt::Debug;
 
-use clause::Clause;
 use definition::Column;
-use expression::Expression;
+use grammar::{Clause, Expression};
 use {Buffer, Result};
 
 /// An `ORDER BY` clause.
@@ -97,7 +96,7 @@ impl<T: Expression> Expression for (T, Option<Order>) {
 
 #[cfg(test)]
 mod tests {
-    use clause::Clause;
+    use grammar::Clause;
     use prelude::*;
 
     macro_rules! new(
@@ -105,30 +104,27 @@ mod tests {
     );
 
     #[test]
-    fn ascending() {
-        let clause = new!("foo".ascending());
-        assert_eq!(clause.compile().unwrap(), "ORDER BY foo ASC");
+    fn from_column() {
+        let clause = new!(column("foo"));
+        assert_eq!(clause.compile().unwrap(), "ORDER BY `foo`");
 
         let clause = new!(column("foo").ascending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` ASC");
-    }
-
-    #[test]
-    fn descending() {
-        let clause = new!("foo".descending());
-        assert_eq!(clause.compile().unwrap(), "ORDER BY foo DESC");
 
         let clause = new!(column("foo").descending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` DESC");
     }
 
     #[test]
-    fn unspecified() {
+    fn from_string() {
         let clause = new!("foo");
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo");
 
-        let clause = new!(column("foo"));
-        assert_eq!(clause.compile().unwrap(), "ORDER BY `foo`");
+        let clause = new!("foo".ascending());
+        assert_eq!(clause.compile().unwrap(), "ORDER BY foo ASC");
+
+        let clause = new!("foo".descending());
+        assert_eq!(clause.compile().unwrap(), "ORDER BY foo DESC");
     }
 
     #[test]

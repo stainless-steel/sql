@@ -1,5 +1,4 @@
-use definition::Definition;
-use expression::Expression;
+use grammar::{Definition, Expression};
 use {Buffer, Result, Type};
 
 /// A column definition.
@@ -85,7 +84,7 @@ impl Expression for Column {
 
 #[cfg(test)]
 mod tests {
-    use definition::Definition;
+    use grammar::Definition;
     use prelude::*;
 
     #[test]

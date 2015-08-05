@@ -1,5 +1,5 @@
-use definition::{Definition, Column};
-use statement::Statement;
+use definition::Column;
+use grammar::{Definition, Statement};
 use {Buffer, Result};
 
 /// A `CREATE TABLE` statement.
@@ -68,12 +68,16 @@ mod tests {
     use prelude::*;
 
     #[test]
-    fn if_not_exists() {
-        let statement = create_table("foo").if_not_exists().columns(&[
-            column("bar").kind(Type::Float), column("baz").kind(Type::String),
-        ]);
+    fn columns() {
+        let statement = create_table("foo").columns(&[column("bar").float(),
+                                                      column("baz").string()]);
 
-        assert_eq!(statement.compile().unwrap(),
-                   "CREATE TABLE IF NOT EXISTS `foo` (`bar` REAL, `baz` TEXT)");
+        assert_eq!(statement.compile().unwrap(), "CREATE TABLE `foo` (`bar` REAL, `baz` TEXT)");
+    }
+
+    #[test]
+    fn if_not_exists() {
+        let statement = create_table("foo").if_not_exists().column(column("bar").float());
+        assert_eq!(statement.compile().unwrap(), "CREATE TABLE IF NOT EXISTS `foo` (`bar` REAL)");
     }
 }

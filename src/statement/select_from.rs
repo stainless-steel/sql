@@ -1,6 +1,5 @@
-use clause::{Clause, OrderBy};
-use expression::Expression;
-use statement::Statement;
+use clause::OrderBy;
+use grammar::{Clause, Condition, Expression, Statement};
 use {Buffer, Result};
 
 /// A `SELECT FROM` statement.
@@ -8,7 +7,7 @@ use {Buffer, Result};
 pub struct SelectFrom {
     table: Option<String>,
     columns: Option<Vec<String>>,
-    conditions: Option<Vec<Box<Expression>>>,
+    conditions: Option<Vec<Box<Condition>>>,
     order_by: Option<OrderBy>,
     limit: Option<usize>,
 }
@@ -41,7 +40,7 @@ impl SelectFrom {
     }
 
     /// Add a condition.
-    pub fn so_that<T>(mut self, value: T) -> Self where T: Expression + 'static {
+    pub fn so_that<T>(mut self, value: T) -> Self where T: Condition + 'static {
         push!(self.conditions, Box::new(value));
         self
     }
@@ -123,21 +122,8 @@ mod tests {
 
     #[test]
     fn order() {
-        let statement = select_from("foo").order_by("bar");
-        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY bar");
-
-        let statement = select_from("foo").order_by(column("bar"));
-        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar`");
-
-        let statement = select_from("foo").order_by(column("bar").ascending());
-        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar` ASC");
-
-        let statement = select_from("foo").order_by(column("bar").descending());
-        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar` DESC");
-
-        let statement = select_from("foo").order_by(column("bar"))
-                                          .order_by(column("baz").descending());
-        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY `bar`, `baz` DESC");
+        let statement = select_from("foo").order_by("bar").order_by(column("baz").descending());
+        assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY bar, `baz` DESC");
     }
 
     #[test]
