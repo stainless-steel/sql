@@ -24,7 +24,7 @@ println!("{}", select_from("users").so_that(column("name").like("A%"))
                                    .compile().unwrap());
 
 // SELECT * FROM `users` ORDER BY `name` DESC
-println!("{}", select_from("users").order_by(column("name").descending())
+println!("{}", select_from("users").order_by(column("name").descend())
                                    .compile().unwrap());
 
 // SELECT `name`, `photo` FROM `users` LIMIT 1

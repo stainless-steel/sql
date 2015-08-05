@@ -118,7 +118,7 @@ mod tests {
 
     #[test]
     fn order() {
-        let statement = select_from("foo").order_by("bar").order_by(column("baz").descending());
+        let statement = select_from("foo").order_by("bar").order_by(column("baz").descend());
         assert_eq!(statement.compile().unwrap(), "SELECT * FROM `foo` ORDER BY bar, `baz` DESC");
     }
 

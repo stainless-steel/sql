@@ -26,12 +26,12 @@ pub trait Orderable where Self: Sized {
     fn order(self, Option<Order>) -> Self::Output;
 
     /// Set the ascending order.
-    fn ascending(self) -> Self::Output {
+    fn ascend(self) -> Self::Output {
         self.order(Some(Order::Ascending))
     }
 
     /// Set the descending order.
-    fn descending(self) -> Self::Output {
+    fn descend(self) -> Self::Output {
         self.order(Some(Order::Descending))
     }
 }
@@ -97,10 +97,10 @@ mod tests {
         let clause = new!(column("foo"));
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo`");
 
-        let clause = new!(column("foo").ascending());
+        let clause = new!(column("foo").ascend());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` ASC");
 
-        let clause = new!(column("foo").descending());
+        let clause = new!(column("foo").descend());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` DESC");
     }
 
@@ -109,17 +109,17 @@ mod tests {
         let clause = new!("foo");
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo");
 
-        let clause = new!("foo".ascending());
+        let clause = new!("foo".ascend());
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo ASC");
 
-        let clause = new!("foo".descending());
+        let clause = new!("foo".descend());
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo DESC");
     }
 
     #[test]
     fn append() {
-        let clause = new!("foo").append(column("bar").ascending())
-                                .append("baz".to_string().descending());
+        let clause = new!("foo").append(column("bar").ascend())
+                                .append("baz".to_string().descend());
 
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo, `bar` ASC, baz DESC");
     }
