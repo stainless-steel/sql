@@ -30,8 +30,6 @@
 
 use std::{error, fmt, result};
 
-struct Buffer(Vec<String>);
-
 /// An error.
 pub struct Error(String);
 
@@ -69,33 +67,6 @@ impl error::Error for Error {
     }
 }
 
-impl Buffer {
-    fn new() -> Buffer {
-        Buffer(vec![])
-    }
-
-    fn push<T: ToString>(&mut self, chunk: T) -> &mut Self {
-        self.0.push(chunk.to_string());
-        self
-    }
-
-    fn join(self, delimiter: &str) -> String {
-        let mut result = String::new();
-        for (i, chunk) in self.0.iter().enumerate() {
-            if i > 0 {
-                result.push_str(delimiter)
-            }
-            result.push_str(chunk);
-        }
-        result
-    }
-
-    #[inline]
-    fn len(&self) -> usize {
-        self.0.len()
-    }
-}
-
 macro_rules! raise(
     ($message:expr) => (
         return Err(::Error($message.to_string()));
@@ -107,32 +78,6 @@ macro_rules! ok(
         match $result {
             Ok(result) => result,
             Err(error) => raise!(error),
-        }
-    );
-);
-
-macro_rules! some(
-    ($option:expr, $name:expr) => (
-        match $option {
-            Some(ref value) => value,
-            _ => raise!(concat!("expected “", stringify!($name), "” to be set")),
-        }
-    );
-    ($this:ident.$field:ident) => (
-        some!($this.$field, $field)
-    );
-);
-
-macro_rules! push(
-    ($collection:expr, $value:expr) => (
-        match $collection {
-            Some(ref mut collection) => {
-                collection.push($value);
-            },
-            _ => {
-                let collection = &mut $collection;
-                *collection = Some(vec![$value]);
-            },
         }
     );
 );

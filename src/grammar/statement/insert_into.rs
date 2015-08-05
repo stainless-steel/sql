@@ -1,5 +1,5 @@
-use grammar::Statement;
-use {Buffer, Result};
+use Result;
+use grammar::{Buffer, Statement};
 
 /// An `INSERT INTO` statement.
 #[derive(Clone, Debug, Default)]

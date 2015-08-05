@@ -1,4 +1,4 @@
-//! Domain-specific language.
+//! The language.
 
 use grammar::definition::Column;
 use grammar::statement::{CreateTable, InsertInto, SelectFrom};

@@ -1,8 +1,8 @@
 //! The `ORDER BY` clause.
 
+use Result;
 use grammar::definition::Column;
-use grammar::{Clause, Expression};
-use {Buffer, Result};
+use grammar::{Buffer, Clause, Expression};
 
 /// An `ORDER BY` clause.
 #[derive(Debug, Default)]

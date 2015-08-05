@@ -1,5 +1,5 @@
-use grammar::{Definition, Expression};
-use {Buffer, Result, Type};
+use grammar::{Buffer, Definition, Expression};
+use {Result, Type};
 
 /// A column definition.
 #[derive(Clone, Debug, Default)]

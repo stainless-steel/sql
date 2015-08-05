@@ -1,6 +1,6 @@
+use Result;
 use grammar::clause::OrderBy;
-use grammar::{Clause, Condition, Expression, Statement};
-use {Buffer, Result};
+use grammar::{Buffer, Clause, Condition, Expression, Statement};
 
 /// A `SELECT FROM` statement.
 #[derive(Debug, Default)]

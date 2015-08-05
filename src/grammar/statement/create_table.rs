@@ -1,6 +1,6 @@
+use Result;
 use grammar::definition::Column;
-use grammar::{Definition, Statement};
-use {Buffer, Result};
+use grammar::{Buffer, Definition, Statement};
 
 /// A `CREATE TABLE` statement.
 #[derive(Clone, Debug, Default)]

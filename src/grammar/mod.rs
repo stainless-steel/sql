@@ -1,8 +1,10 @@
-//! Grammar elements.
+//! The grammar.
 
 use std::fmt::Debug;
 
 use Result;
+
+struct Buffer(Vec<String>);
 
 /// A clause.
 pub trait Clause: Debug {
@@ -40,6 +42,33 @@ pub trait Statement: Debug {
     fn compile(&self) -> Result<String>;
 }
 
+impl Buffer {
+    fn new() -> Buffer {
+        Buffer(vec![])
+    }
+
+    fn push<T: ToString>(&mut self, chunk: T) -> &mut Self {
+        self.0.push(chunk.to_string());
+        self
+    }
+
+    fn join(self, delimiter: &str) -> String {
+        let mut result = String::new();
+        for (i, chunk) in self.0.iter().enumerate() {
+            if i > 0 {
+                result.push_str(delimiter)
+            }
+            result.push_str(chunk);
+        }
+        result
+    }
+
+    #[inline]
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
 impl<'l> Expression for &'l str {
     #[inline]
     fn compile(&self) -> Result<String> {
@@ -67,6 +96,32 @@ impl<T: Operation> Condition for T {
         Operation::compile(self)
     }
 }
+
+macro_rules! some(
+    ($option:expr, $name:expr) => (
+        match $option {
+            Some(ref value) => value,
+            _ => raise!(concat!("expected “", stringify!($name), "” to be set")),
+        }
+    );
+    ($this:ident.$field:ident) => (
+        some!($this.$field, $field)
+    );
+);
+
+macro_rules! push(
+    ($collection:expr, $value:expr) => (
+        match $collection {
+            Some(ref mut collection) => {
+                collection.push($value);
+            },
+            _ => {
+                let collection = &mut $collection;
+                *collection = Some(vec![$value]);
+            },
+        }
+    );
+);
 
 pub mod clause;
 pub mod definition;
