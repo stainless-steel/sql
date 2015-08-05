@@ -6,7 +6,7 @@ use grammar::{Buffer, Clause, Expression};
 
 /// An `ORDER BY` clause.
 #[derive(Debug, Default)]
-pub struct OrderBy(Option<Vec<Box<Expression>>>);
+pub struct OrderBy(Vec<Box<Expression>>);
 
 /// An order.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -39,7 +39,7 @@ pub trait Orderable where Self: Sized {
 impl OrderBy {
     #[doc(hidden)]
     pub fn append<T>(mut self, expression: T) -> Self where T: Expression + 'static {
-        push!(self.0, Box::new(expression));
+        self.0.push(Box::new(expression));
         self
     }
 }
@@ -47,7 +47,7 @@ impl OrderBy {
 impl Clause for OrderBy {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
-        for expression in some!(self.0, expressions) {
+        for expression in &self.0 {
             buffer.push(try!(expression.compile()));
         }
         Ok(format!("ORDER BY {}", buffer.join(", ")))
