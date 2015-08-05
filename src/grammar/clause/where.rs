@@ -21,6 +21,28 @@ impl Clause for Where {
         for condition in &self.0 {
             buffer.push(try!(condition.compile()));
         }
-        Ok(format!("WHERE {}", buffer.join(" OR ")))
+        Ok(format!("WHERE {}", buffer.join(" AND ")))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use grammar::Clause;
+    use prelude::*;
+
+    macro_rules! new(
+        ($first:expr) => (super::Where::default().and($first));
+    );
+
+    #[test]
+    fn one() {
+        let clause = new!("foo".like("bar"));
+        assert_eq!(clause.compile().unwrap(), "WHERE foo LIKE 'bar'");
+    }
+
+    #[test]
+    fn and() {
+        let clause = new!("foo".like("bar")).and("baz".like("qux"));
+        assert_eq!(clause.compile().unwrap(), "WHERE foo LIKE 'bar' AND baz LIKE 'qux'");
     }
 }
