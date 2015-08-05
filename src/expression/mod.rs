@@ -30,7 +30,3 @@ impl Expression for usize {
         Ok(self.to_string())
     }
 }
-
-mod like;
-
-pub use self::like::Like;

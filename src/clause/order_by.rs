@@ -1,3 +1,5 @@
+//! The `ORDER BY` clause.
+
 use std::fmt::Debug;
 
 use clause::Clause;

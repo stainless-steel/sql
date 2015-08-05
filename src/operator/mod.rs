@@ -1,21 +1,27 @@
 //! Operators.
 
-use definition::Column;
-use expression::Like;
+use Result;
 
-/// A type that can be matched.
-pub trait Likable {
-    /// The type produced after setting a matcher.
-    type Output;
-
-    /// Set a matcher.
-    fn like<T: ToString>(self, T) -> Self::Output;
+/// An operator.
+pub trait Operator {
+    /// Compile the operator.
+    fn compile(&self) -> Result<String>;
 }
 
-impl Likable for Column {
-    type Output = Like<Self>;
+pub mod like;
 
-    fn like<A: ToString>(self, value: A) -> Self::Output {
-        Like(self, value.to_string())
+pub use self::like::Likable;
+pub use self::like::Like;
+pub use self::like::Pattern;
+
+/// Helper functions.
+pub mod helper {
+    use expression::Expression;
+    use super::Like;
+
+    /// Create a `LIKE` operator.
+    #[inline]
+    pub fn like<T: 'static + Expression>(object: T) -> Like {
+        Like::new(object)
     }
 }

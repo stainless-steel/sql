@@ -10,7 +10,6 @@ pub trait Clause: Debug {
     fn compile(&self) -> Result<String>;
 }
 
-/// The `ORDER BY` clause.
 pub mod order_by;
 
 pub use self::order_by::Order;

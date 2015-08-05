@@ -4,6 +4,7 @@ pub use Type;
 
 pub use clause::helper::*;
 pub use definition::helper::*;
+pub use operator::helper::*;
 pub use statement::helper::*;
 
 pub use clause::Clause;
