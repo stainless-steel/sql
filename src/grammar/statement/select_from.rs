@@ -1,5 +1,5 @@
 use Result;
-use grammar::clause::OrderBy;
+use grammar::clause::{OrderBy, Where};
 use grammar::{Buffer, Clause, Condition, Expression, Statement};
 
 /// A `SELECT FROM` statement.
@@ -7,7 +7,7 @@ use grammar::{Buffer, Clause, Condition, Expression, Statement};
 pub struct SelectFrom {
     table: Option<String>,
     columns: Option<Vec<String>>,
-    conditions: Option<Vec<Box<Condition>>>,
+    so_that: Option<Where>,
     order_by: Option<OrderBy>,
     limit: Option<usize>,
 }
@@ -20,43 +20,46 @@ impl SelectFrom {
     }
 
     /// Set the table.
-    pub fn table<T: ToString>(mut self, value: T) -> Self {
-        self.table = Some(value.to_string());
+    pub fn table<T: ToString>(mut self, name: T) -> Self {
+        self.table = Some(name.to_string());
         self
     }
 
     /// Add a column.
-    pub fn column<T: ToString>(mut self, value: T) -> Self {
-        push!(self.columns, value.to_string());
+    pub fn column<T: ToString>(mut self, name: T) -> Self {
+        push!(self.columns, name.to_string());
         self
     }
 
     /// Add multiple columns.
-    pub fn columns<T: ToString>(mut self, values: &[T]) -> Self {
-        for value in values {
-            push!(self.columns, value.to_string());
+    pub fn columns<T: ToString>(mut self, names: &[T]) -> Self {
+        for name in names {
+            push!(self.columns, name.to_string());
         }
         self
     }
 
     /// Add a condition.
-    pub fn so_that<T>(mut self, value: T) -> Self where T: Condition + 'static {
-        push!(self.conditions, Box::new(value));
+    pub fn so_that<T>(mut self, condition: T) -> Self where T: Condition + 'static {
+        self.so_that = Some(match self.so_that.take() {
+            Some(so_that) => so_that.and(condition),
+            _ => Where::default().and(condition),
+        });
         self
     }
 
     /// Add an order.
-    pub fn order_by<T>(mut self, value: T) -> Self where T: Expression + 'static {
+    pub fn order_by<T>(mut self, expression: T) -> Self where T: Expression + 'static {
         self.order_by = Some(match self.order_by.take() {
-            Some(order_by) => order_by.append(value),
-            _ => OrderBy::default().append(value),
+            Some(order_by) => order_by.append(expression),
+            _ => OrderBy::default().append(expression),
         });
         self
     }
 
     /// Set the limit.
-    pub fn limit(mut self, value: usize) -> Self {
-        self.limit = Some(value);
+    pub fn limit(mut self, count: usize) -> Self {
+        self.limit = Some(count);
         self
     }
 }
@@ -78,21 +81,14 @@ impl Statement for SelectFrom {
         }
         buffer.push("FROM");
         buffer.push(format!("`{}`", some!(self.table)));
-        if let &Some(ref conditions) = &self.conditions {
-            buffer.push("WHERE");
-            buffer.push({
-                let mut buffer = Buffer::new();
-                for condition in conditions {
-                    buffer.push(try!(condition.compile()));
-                }
-                buffer.join(" AND ")
-            });
+        if let &Some(ref clause) = &self.so_that {
+            buffer.push(try!(clause.compile()));
         }
-        if let Some(ref order_by) = self.order_by {
-            buffer.push(try!(order_by.compile()));
+        if let Some(ref clause) = self.order_by {
+            buffer.push(try!(clause.compile()));
         }
-        if let Some(limit) = self.limit {
-            buffer.push(format!("LIMIT {}", limit));
+        if let Some(count) = self.limit {
+            buffer.push(format!("LIMIT {}", count));
         }
         Ok(buffer.join(" "))
     }
