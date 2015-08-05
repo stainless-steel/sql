@@ -6,9 +6,9 @@
 //! use sql::prelude::*;
 //!
 //! // CREATE TABLE `users` (`id` INTEGER NOT NULL, `name` TEXT, `photo` BLOB)
-//! println!("{}", create_table("users").column(column("id").integer().not_null())
-//!                                     .column(column("name").string())
-//!                                     .column(column("photo").binary())
+//! println!("{}", create_table("users").column("id".integer().not_null())
+//!                                     .column("name".string())
+//!                                     .column("photo".binary())
 //!                                     .compile().unwrap());
 //!
 //! // INSERT INTO `users` (`id`, `name`) VALUES (?, ?), (?, ?)
