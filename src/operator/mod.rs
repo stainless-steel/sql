@@ -1,16 +1,21 @@
 //! Operators.
 
 use definition::Column;
-use expression;
+use expression::Like;
 
-/// A `LIKE` operator.
-pub trait Like {
-    /// Apply the operator.
-    fn like<T: ToString>(self, T) -> expression::Like<Self>;
+/// A type that can be matched.
+pub trait Likable {
+    /// The type produced after setting a matcher.
+    type Output;
+
+    /// Set a matcher.
+    fn like<T: ToString>(self, T) -> Self::Output;
 }
 
-impl Like for Column {
-    fn like<A: ToString>(self, value: A) -> expression::Like<Self> {
-        expression::Like(self, value.to_string())
+impl Likable for Column {
+    type Output = Like<Self>;
+
+    fn like<A: ToString>(self, value: A) -> Self::Output {
+        Like(self, value.to_string())
     }
 }

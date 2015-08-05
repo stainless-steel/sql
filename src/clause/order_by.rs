@@ -22,8 +22,8 @@ pub enum Order {
 
 /// A type that can be ordered by.
 pub trait Orderable: Debug where Self: Sized {
-    /// The type after enforcing a particular order.
-    type Output: Orderable;
+    /// The type produced after setting an order.
+    type Output;
 
     /// Set the order.
     fn order(self, Option<Order>) -> Self::Output;
