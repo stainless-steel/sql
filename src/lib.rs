@@ -49,6 +49,39 @@ pub enum Type {
     String,
 }
 
+/// An object that can be assigend a type.
+pub trait Typable where Self: Sized {
+    /// The type produced after setting a type.
+    type Output;
+
+    /// Set the type.
+    fn kind(mut self, value: Type) -> Self::Output;
+
+    /// Set the type to `Binary`.
+    #[inline]
+    fn binary(self) -> Self::Output {
+        self.kind(Type::Binary)
+    }
+
+    /// Set the type to `Float`.
+    #[inline]
+    fn float(self) -> Self::Output {
+        self.kind(Type::Float)
+    }
+
+    /// Set the type to `Integer`.
+    #[inline]
+    fn integer(self) -> Self::Output {
+        self.kind(Type::Integer)
+    }
+
+    /// Set the type to `String`.
+    #[inline]
+    fn string(self) -> Self::Output {
+        self.kind(Type::String)
+    }
+}
+
 impl fmt::Debug for Error {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         self.0.fmt(formatter)

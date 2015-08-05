@@ -1,5 +1,5 @@
 use grammar::{Buffer, Definition, Expression};
-use {Result, Type};
+use {Result, Typable, Type};
 
 /// A column definition.
 #[derive(Clone, Debug, Default)]
@@ -26,30 +26,6 @@ impl Column {
     pub fn kind(mut self, value: Type) -> Self {
         self.kind = Some(value);
         self
-    }
-
-    /// Set the type to `Binary`.
-    #[inline]
-    pub fn binary(self) -> Self {
-        self.kind(Type::Binary)
-    }
-
-    /// Set the type to `Float`.
-    #[inline]
-    pub fn float(self) -> Self {
-        self.kind(Type::Float)
-    }
-
-    /// Set the type to `Integer`.
-    #[inline]
-    pub fn integer(self) -> Self {
-        self.kind(Type::Integer)
-    }
-
-    /// Set the type to `String`.
-    #[inline]
-    pub fn string(self) -> Self {
-        self.kind(Type::String)
     }
 
     /// Mark that it should not be null.
@@ -79,6 +55,24 @@ impl Definition for Column {
 impl Expression for Column {
     fn compile(&self) -> Result<String> {
         Ok(format!("`{}`", some!(self.name)))
+    }
+}
+
+impl Typable for Column {
+    type Output = Self;
+
+    #[inline]
+    fn kind(self, kind: Type) -> Self {
+        Column::kind(self, kind)
+    }
+}
+
+impl<'l> Typable for &'l str {
+    type Output = Column;
+
+    #[inline]
+    fn kind(self, kind: Type) -> Self::Output {
+        Column::default().name(self).kind(kind)
     }
 }
 

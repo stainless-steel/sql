@@ -8,7 +8,7 @@ use grammar::{Expression, Operation};
 #[derive(Debug)]
 pub struct Like(Box<Expression>, String);
 
-/// A type that can be matched.
+/// An object that can be matched.
 pub trait Likable {
     /// Set a matcher.
     fn like<T: ToString>(self, T) -> Like;

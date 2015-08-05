@@ -17,7 +17,7 @@ pub enum Order {
     Descending,
 }
 
-/// A type that can be ordered by.
+/// An object that can be ordered by.
 pub trait Orderable where Self: Sized {
     /// The type produced after setting an order.
     type Output;

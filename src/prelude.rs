@@ -1,5 +1,6 @@
 //! Reexports of functions, traits, and types.
 
+pub use Typable;
 pub use Type;
 
 pub use grammar::Statement;
