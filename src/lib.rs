@@ -112,22 +112,26 @@ macro_rules! ok(
 );
 
 macro_rules! some(
-    ($this:ident.$field:ident) => (
-        match $this.$field {
+    ($option:expr, $name:expr) => (
+        match $option {
             Some(ref value) => value,
-            _ => raise!(concat!("expected “", stringify!($field), "” to be set")),
+            _ => raise!(concat!("expected “", stringify!($name), "” to be set")),
         }
+    );
+    ($this:ident.$field:ident) => (
+        some!($this.$field, $field)
     );
 );
 
 macro_rules! push(
-    ($this:ident.$field:ident, $value:expr) => (
-        match $this.$field {
+    ($collection:expr, $value:expr) => (
+        match $collection {
             Some(ref mut collection) => {
                 collection.push($value);
             },
             _ => {
-                $this.$field = Some(vec![$value]);
+                let collection = &mut $collection;
+                *collection = Some(vec![$value]);
             },
         }
     );

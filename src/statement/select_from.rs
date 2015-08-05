@@ -41,16 +41,16 @@ impl SelectFrom {
     }
 
     /// Add a condition.
-    pub fn so_that<T: 'static + Expression>(mut self, value: T) -> Self {
+    pub fn so_that<T>(mut self, value: T) -> Self where T: Expression + 'static {
         push!(self.conditions, Box::new(value));
         self
     }
 
     /// Add an order.
-    pub fn order_by<T: 'static + Expression>(mut self, value: T) -> Self {
+    pub fn order_by<T>(mut self, value: T) -> Self where T: Expression + 'static {
         self.order_by = Some(match self.order_by.take() {
-            Some(order_by) => order_by.and(value),
-            _ => OrderBy::default().and(value),
+            Some(order_by) => order_by.append(value),
+            _ => OrderBy::default().append(value),
         });
         self
     }

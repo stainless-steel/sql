@@ -9,9 +9,7 @@ use {Buffer, Result};
 
 /// An `ORDER BY` clause.
 #[derive(Debug, Default)]
-pub struct OrderBy {
-    parts: Option<Vec<Box<Expression>>>,
-}
+pub struct OrderBy(Option<Vec<Box<Expression>>>);
 
 /// An order.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -42,15 +40,9 @@ pub trait Orderable: Debug where Self: Sized {
 }
 
 impl OrderBy {
-    /// Create an `ORDER BY` clause.
-    #[inline]
-    pub fn new<T: 'static + Expression>(order: T) -> OrderBy {
-        OrderBy::default().and(order)
-    }
-
-    /// Add an order.
-    pub fn and<T: 'static + Expression>(mut self, value: T) -> Self {
-        push!(self.parts, Box::new(value));
+    #[doc(hidden)]
+    pub fn append<T>(mut self, expression: T) -> Self where T: Expression + 'static {
+        push!(self.0, Box::new(expression));
         self
     }
 }
@@ -58,34 +50,15 @@ impl OrderBy {
 impl Clause for OrderBy {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
-        for part in some!(self.parts) {
-            buffer.push(try!(part.compile()));
+        for expression in some!(self.0, expressions) {
+            buffer.push(try!(expression.compile()));
         }
         Ok(format!("ORDER BY {}", buffer.join(", ")))
     }
 }
 
-impl<T: Expression> Orderable for (T, Option<Order>) {
-    type Output = Self;
-
-    #[inline]
-    fn order(mut self, order: Option<Order>) -> Self::Output {
-        self.1 = order;
-        self
-    }
-}
-
 impl Orderable for Column {
     type Output = (Column, Option<Order>);
-
-    #[inline]
-    fn order(self, order: Option<Order>) -> Self::Output {
-        (self, order)
-    }
-}
-
-impl Orderable for String {
-    type Output = (String, Option<Order>);
 
     #[inline]
     fn order(self, order: Option<Order>) -> Self::Output {
@@ -126,39 +99,42 @@ impl<T: Expression> Expression for (T, Option<Order>) {
 mod tests {
     use clause::Clause;
     use prelude::*;
-    use super::OrderBy;
+
+    macro_rules! new(
+        ($first:expr) => (super::OrderBy::default().append($first));
+    );
 
     #[test]
     fn ascending() {
-        let clause = OrderBy::new("foo".ascending());
+        let clause = new!("foo".ascending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo ASC");
 
-        let clause = OrderBy::new(column("foo").ascending());
+        let clause = new!(column("foo").ascending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` ASC");
     }
 
     #[test]
     fn descending() {
-        let clause = OrderBy::new("foo".descending());
+        let clause = new!("foo".descending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo DESC");
 
-        let clause = OrderBy::new(column("foo").descending());
+        let clause = new!(column("foo").descending());
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo` DESC");
     }
 
     #[test]
     fn unspecified() {
-        let clause = OrderBy::new("foo");
+        let clause = new!("foo");
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo");
 
-        let clause = OrderBy::new(column("foo"));
+        let clause = new!(column("foo"));
         assert_eq!(clause.compile().unwrap(), "ORDER BY `foo`");
     }
 
     #[test]
-    fn and() {
-        let clause = OrderBy::new("foo").and(column("bar").ascending())
-                                        .and("baz".to_string().descending());
+    fn append() {
+        let clause = new!("foo").append(column("bar").ascending())
+                                .append("baz".to_string().descending());
 
         assert_eq!(clause.compile().unwrap(), "ORDER BY foo, `bar` ASC, baz DESC");
     }
