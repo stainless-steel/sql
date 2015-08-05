@@ -1,4 +1,4 @@
-use clause::OrderBy;
+use grammar::clause::OrderBy;
 use grammar::{Clause, Condition, Expression, Statement};
 use {Buffer, Result};
 

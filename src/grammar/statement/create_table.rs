@@ -1,4 +1,4 @@
-use definition::Column;
+use grammar::definition::Column;
 use grammar::{Definition, Statement};
 use {Buffer, Result};
 

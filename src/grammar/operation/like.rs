@@ -1,7 +1,7 @@
 //! The `LIKE` operation.
 
 use Result;
-use definition::Column;
+use grammar::definition::Column;
 use grammar::{Expression, Operation};
 
 /// A `LIKE` operation.

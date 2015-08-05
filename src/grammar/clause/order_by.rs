@@ -1,8 +1,6 @@
 //! The `ORDER BY` clause.
 
-use std::fmt::Debug;
-
-use definition::Column;
+use grammar::definition::Column;
 use grammar::{Clause, Expression};
 use {Buffer, Result};
 
@@ -20,7 +18,7 @@ pub enum Order {
 }
 
 /// A type that can be ordered by.
-pub trait Orderable: Debug where Self: Sized {
+pub trait Orderable where Self: Sized {
     /// The type produced after setting an order.
     type Output;
 

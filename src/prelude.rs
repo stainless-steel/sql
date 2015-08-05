@@ -2,8 +2,8 @@
 
 pub use Type;
 
-pub use clause::Orderable;
 pub use grammar::Statement;
-pub use operation::Likable;
+pub use grammar::clause::Orderable;
+pub use grammar::operation::Likable;
 
 pub use language::*;

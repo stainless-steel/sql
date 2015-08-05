@@ -1,7 +1,7 @@
 //! Domain-specific language.
 
-use definition::Column;
-use statement::{CreateTable, InsertInto, SelectFrom};
+use grammar::definition::Column;
+use grammar::statement::{CreateTable, InsertInto, SelectFrom};
 
 /// Create a column definition.
 #[inline]
