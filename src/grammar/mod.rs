@@ -83,13 +83,6 @@ impl Expression for String {
     }
 }
 
-impl Expression for usize {
-    #[inline]
-    fn compile(&self) -> Result<String> {
-        Ok(self.to_string())
-    }
-}
-
 impl<T: Operation> Condition for T {
     #[inline]
     fn compile(&self) -> Result<String> {

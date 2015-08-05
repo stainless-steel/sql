@@ -72,15 +72,6 @@ impl<'l> Orderable for &'l str {
     }
 }
 
-impl Orderable for usize {
-    type Output = (usize, Option<Order>);
-
-    #[inline]
-    fn order(self, order: Option<Order>) -> Self::Output {
-        (self, order)
-    }
-}
-
 impl<T: Expression> Expression for (T, Option<Order>) {
     fn compile(&self) -> Result<String> {
         let main = try!(self.0.compile());
