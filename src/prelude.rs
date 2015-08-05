@@ -8,5 +8,5 @@ pub use statement::helper::*;
 
 pub use clause::Clause;
 pub use clause::Orderable;
-pub use operation::Like;
+pub use operator::Like;
 pub use statement::Statement;

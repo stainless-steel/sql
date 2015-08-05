@@ -132,7 +132,7 @@ macro_rules! push(
 pub mod clause;
 pub mod definition;
 pub mod expression;
-pub mod operation;
+pub mod operator;
 pub mod statement;
 
 pub mod prelude;

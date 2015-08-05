@@ -18,8 +18,6 @@ pub enum Order {
     Ascending,
     /// The descending order.
     Descending,
-    /// The unspecified order.
-    Unspecified,
 }
 
 /// A type that can be ordered by.
@@ -28,22 +26,16 @@ pub trait Orderable: Debug where Self: Sized {
     type Output: Orderable;
 
     /// Set the order.
-    fn order(self, Order) -> Self::Output;
+    fn order(self, Option<Order>) -> Self::Output;
 
     /// Set the ascending order.
     fn ascending(self) -> Self::Output {
-        self.order(Order::Ascending)
+        self.order(Some(Order::Ascending))
     }
 
     /// Set the descending order.
     fn descending(self) -> Self::Output {
-        self.order(Order::Descending)
-    }
-
-    /// Return the order.
-    #[inline]
-    fn get_order(&self) -> Order {
-        Order::Unspecified
+        self.order(Some(Order::Descending))
     }
 }
 
@@ -71,63 +63,58 @@ impl Clause for OrderBy {
     }
 }
 
-impl<T: Expression> Orderable for (T, Order) {
+impl<T: Expression> Orderable for (T, Option<Order>) {
     type Output = Self;
 
     #[inline]
-    fn order(mut self, order: Order) -> Self::Output {
+    fn order(mut self, order: Option<Order>) -> Self::Output {
         self.1 = order;
         self
-    }
-
-    #[inline]
-    fn get_order(&self) -> Order {
-        self.1
     }
 }
 
 impl Orderable for Column {
-    type Output = (Column, Order);
+    type Output = (Column, Option<Order>);
 
     #[inline]
-    fn order(self, order: Order) -> Self::Output {
+    fn order(self, order: Option<Order>) -> Self::Output {
         (self, order)
     }
 }
 
 impl Orderable for String {
-    type Output = (String, Order);
+    type Output = (String, Option<Order>);
 
     #[inline]
-    fn order(self, order: Order) -> Self::Output {
+    fn order(self, order: Option<Order>) -> Self::Output {
         (self, order)
     }
 }
 
 impl<'l> Orderable for &'l str {
-    type Output = (String, Order);
+    type Output = (String, Option<Order>);
 
     #[inline]
-    fn order(self, order: Order) -> Self::Output {
+    fn order(self, order: Option<Order>) -> Self::Output {
         (self.to_string(), order)
     }
 }
 
 impl Orderable for usize {
-    type Output = (usize, Order);
+    type Output = (usize, Option<Order>);
 
     #[inline]
-    fn order(self, order: Order) -> Self::Output {
+    fn order(self, order: Option<Order>) -> Self::Output {
         (self, order)
     }
 }
 
-impl<T: Expression> Expression for (T, Order) {
+impl<T: Expression> Expression for (T, Option<Order>) {
     fn compile(&self) -> Result<String> {
         let main = try!(self.0.compile());
         Ok(match self.1 {
-            Order::Ascending => format!("{} ASC", main),
-            Order::Descending => format!("{} DESC", main),
+            Some(Order::Ascending) => format!("{} ASC", main),
+            Some(Order::Descending) => format!("{} DESC", main),
             _ => main,
         })
     }

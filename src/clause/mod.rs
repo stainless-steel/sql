@@ -10,10 +10,12 @@ pub trait Clause: Debug {
     fn compile(&self) -> Result<String>;
 }
 
-#[doc(hidden)]
+/// The `ORDER BY` clause.
 pub mod order_by;
 
-pub use self::order_by::{OrderBy, Order, Orderable};
+pub use self::order_by::Order;
+pub use self::order_by::OrderBy;
+pub use self::order_by::Orderable;
 
 /// Helper functions.
 pub mod helper {

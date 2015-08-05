@@ -1,6 +1,5 @@
 use definition::Definition;
-use expression::{self, Expression};
-use operation;
+use expression::Expression;
 use {Buffer, Result, Type};
 
 /// A column definition.
@@ -81,12 +80,6 @@ impl Definition for Column {
 impl Expression for Column {
     fn compile(&self) -> Result<String> {
         Ok(format!("`{}`", some!(self.name)))
-    }
-}
-
-impl operation::Like for Column {
-    fn like<A: ToString>(self, value: A) -> expression::Like<Self> {
-        expression::Like(self, value.to_string())
     }
 }
 
