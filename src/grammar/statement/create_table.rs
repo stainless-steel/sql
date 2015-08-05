@@ -18,8 +18,8 @@ impl CreateTable {
     }
 
     /// Set the name.
-    pub fn name<T: ToString>(mut self, value: T) -> Self {
-        self.name = Some(value.to_string());
+    pub fn name<T: ToString>(mut self, name: T) -> Self {
+        self.name = Some(name.to_string());
         self
     }
 
@@ -30,15 +30,15 @@ impl CreateTable {
     }
 
     /// Add a column.
-    pub fn column(mut self, value: Column) -> Self {
-        push!(self.columns, value);
+    pub fn column(mut self, name: Column) -> Self {
+        push!(self.columns, name);
         self
     }
 
     /// Add multiple columns.
-    pub fn columns(mut self, values: &[Column]) -> Self {
-        for value in values {
-            push!(self.columns, value.clone());
+    pub fn columns(mut self, names: &[Column]) -> Self {
+        for name in names {
+            push!(self.columns, name.clone());
         }
         self
     }

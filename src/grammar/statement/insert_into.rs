@@ -17,28 +17,28 @@ impl InsertInto {
     }
 
     /// Set the table.
-    pub fn table<T: ToString>(mut self, value: T) -> Self {
-        self.table = Some(value.to_string());
+    pub fn table<T: ToString>(mut self, name: T) -> Self {
+        self.table = Some(name.to_string());
         self
     }
 
     /// Add a column.
-    pub fn column<T: ToString>(mut self, value: T) -> Self {
-        push!(self.columns, value.to_string());
+    pub fn column<T: ToString>(mut self, name: T) -> Self {
+        push!(self.columns, name.to_string());
         self
     }
 
     /// Add multiple columns.
-    pub fn columns<T: ToString>(mut self, values: &[T]) -> Self {
-        for value in values {
-            push!(self.columns, value.to_string());
+    pub fn columns<T: ToString>(mut self, names: &[T]) -> Self {
+        for name in names {
+            push!(self.columns, name.to_string());
         }
         self
     }
 
     /// Extend for inserting multiple rows at once.
-    pub fn batch(mut self, value: usize) -> Self {
-        self.batch = Some(value);
+    pub fn batch(mut self, count: usize) -> Self {
+        self.batch = Some(count);
         self
     }
 }
