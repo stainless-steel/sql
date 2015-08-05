@@ -23,6 +23,10 @@ println!("{}", insert_into("users").columns(&["id", "name"]).batch(2)
 println!("{}", select_from("users").so_that(column("name").like("A%"))
                                    .compile().unwrap());
 
+// SELECT * FROM `users` ORDER BY `name` DESC
+println!("{}", select_from("users").order_by(column("name").descending())
+                                   .compile().unwrap());
+
 // SELECT `name`, `photo` FROM `users` LIMIT 1
 println!("{}", select_from("users").columns(&["name", "photo"]).limit(1)
                                    .compile().unwrap());
