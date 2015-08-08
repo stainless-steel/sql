@@ -26,6 +26,9 @@
 //! // SELECT `name`, `photo` FROM `users` LIMIT 1
 //! println!("{}", select_from("users").columns(&["name", "photo"]).limit(1)
 //!                                    .compile().unwrap());
+//!
+//! // DELETE FROM `users`
+//! println!("{}", delete_from("users").compile().unwrap());
 //! ```
 
 use std::{error, fmt, result};

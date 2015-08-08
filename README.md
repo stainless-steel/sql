@@ -30,6 +30,9 @@ println!("{}", select_from("users").order_by(column("name").descend())
 // SELECT `name`, `photo` FROM `users` LIMIT 1
 println!("{}", select_from("users").columns(&["name", "photo"]).limit(1)
                                    .compile().unwrap());
+
+// DELETE FROM `users`
+println!("{}", delete_from("users").compile().unwrap());
 ```
 
 ## Contributing
