@@ -11,6 +11,9 @@
 //!                                     .column("photo".binary())
 //!                                     .compile().unwrap());
 //!
+//! // DELETE FROM `users`
+//! println!("{}", delete_from("users").compile().unwrap());
+//!
 //! // INSERT INTO `users` (`id`, `name`) VALUES (?, ?), (?, ?)
 //! println!("{}", insert_into("users").columns(&["id", "name"]).batch(2)
 //!                                    .compile().unwrap());
@@ -26,9 +29,6 @@
 //! // SELECT `name`, `photo` FROM `users` LIMIT 1
 //! println!("{}", select_from("users").columns(&["name", "photo"]).limit(1)
 //!                                    .compile().unwrap());
-//!
-//! // DELETE FROM `users`
-//! println!("{}", delete_from("users").compile().unwrap());
 //! ```
 
 use std::{error, fmt, result};

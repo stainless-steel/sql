@@ -15,6 +15,9 @@ println!("{}", create_table("users").column("id".integer().not_null())
                                     .column("photo".binary())
                                     .compile().unwrap());
 
+// DELETE FROM `users`
+println!("{}", delete_from("users").compile().unwrap());
+
 // INSERT INTO `users` (`id`, `name`) VALUES (?, ?), (?, ?)
 println!("{}", insert_into("users").columns(&["id", "name"]).batch(2)
                                    .compile().unwrap());
@@ -30,9 +33,6 @@ println!("{}", select_from("users").order_by(column("name").descend())
 // SELECT `name`, `photo` FROM `users` LIMIT 1
 println!("{}", select_from("users").columns(&["name", "photo"]).limit(1)
                                    .compile().unwrap());
-
-// DELETE FROM `users`
-println!("{}", delete_from("users").compile().unwrap());
 ```
 
 ## Contributing
