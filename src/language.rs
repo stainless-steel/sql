@@ -1,7 +1,7 @@
 //! The language.
 
 use grammar::definition::Column;
-use grammar::statement::{CreateTable, DeleteFrom, InsertInto, SelectFrom};
+use grammar::statement::{CreateTable, Delete, Insert, Select};
 
 /// Create a column definition.
 #[inline]
@@ -15,20 +15,20 @@ pub fn create_table<T: ToString>(name: T) -> CreateTable {
     CreateTable::new(name)
 }
 
-/// Create a `DELETE FROM` statement.
+/// Create a `DELETE` statement.
 #[inline]
-pub fn delete_from<T: ToString>(table: T) -> DeleteFrom {
-    DeleteFrom::new(table)
+pub fn delete_from<T: ToString>(table: T) -> Delete {
+    Delete::new(table)
 }
 
-/// Create an `INSERT INTO` statement.
+/// Create an `INSERT` statement.
 #[inline]
-pub fn insert_into<T: ToString>(table: T) -> InsertInto {
-    InsertInto::new(table)
+pub fn insert_into<T: ToString>(table: T) -> Insert {
+    Insert::new(table)
 }
 
-/// Create a `SELECT FROM` statement.
+/// Create a `SELECT` statement.
 #[inline]
-pub fn select_from<T: ToString>(table: T) -> SelectFrom {
-    SelectFrom::new(table)
+pub fn select_from<T: ToString>(table: T) -> Select {
+    Select::new(table)
 }

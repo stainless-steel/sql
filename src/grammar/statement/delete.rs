@@ -1,17 +1,17 @@
 use Result;
 use grammar::{Buffer, Statement};
 
-/// A `DELETE FROM` statement.
+/// A `DELETE` statement.
 #[derive(Debug, Default)]
-pub struct DeleteFrom {
+pub struct Delete {
     table: Option<String>,
 }
 
-impl DeleteFrom {
-    /// Create a `DELETE FROM` statement.
+impl Delete {
+    /// Create a `DELETE` statement.
     #[inline]
     pub fn new<T: ToString>(table: T) -> Self {
-        DeleteFrom::default().table(table)
+        Delete::default().table(table)
     }
 
     /// Set the table.
@@ -21,7 +21,7 @@ impl DeleteFrom {
     }
 }
 
-impl Statement for DeleteFrom {
+impl Statement for Delete {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
         buffer.push("DELETE FROM");

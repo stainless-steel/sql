@@ -1,19 +1,19 @@
 use Result;
 use grammar::{Buffer, Statement};
 
-/// An `INSERT INTO` statement.
+/// An `INSERT` statement.
 #[derive(Clone, Debug, Default)]
-pub struct InsertInto {
+pub struct Insert {
     table: Option<String>,
     columns: Option<Vec<String>>,
     batch: Option<usize>,
 }
 
-impl InsertInto {
-    /// Create an `INSERT INTO` statement.
+impl Insert {
+    /// Create an `INSERT` statement.
     #[inline]
     pub fn new<T: ToString>(table: T) -> Self {
-        InsertInto::default().table(table)
+        Insert::default().table(table)
     }
 
     /// Set the table.
@@ -43,7 +43,7 @@ impl InsertInto {
     }
 }
 
-impl Statement for InsertInto {
+impl Statement for Insert {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
         buffer.push("INSERT INTO");

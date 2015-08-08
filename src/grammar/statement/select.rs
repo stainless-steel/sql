@@ -2,9 +2,9 @@ use Result;
 use grammar::clause::{OrderBy, Where};
 use grammar::{Buffer, Clause, Condition, Expression, Statement};
 
-/// A `SELECT FROM` statement.
+/// A `SELECT` statement.
 #[derive(Debug, Default)]
-pub struct SelectFrom {
+pub struct Select {
     table: Option<String>,
     columns: Option<Vec<String>>,
     so_that: Option<Where>,
@@ -12,11 +12,11 @@ pub struct SelectFrom {
     limit: Option<usize>,
 }
 
-impl SelectFrom {
-    /// Create a `SELECT FROM` statement.
+impl Select {
+    /// Create a `SELECT` statement.
     #[inline]
     pub fn new<T: ToString>(table: T) -> Self {
-        SelectFrom::default().table(table)
+        Select::default().table(table)
     }
 
     /// Set the table.
@@ -64,7 +64,7 @@ impl SelectFrom {
     }
 }
 
-impl Statement for SelectFrom {
+impl Statement for Select {
     fn compile(&self) -> Result<String> {
         let mut buffer = Buffer::new();
         buffer.push("SELECT");
