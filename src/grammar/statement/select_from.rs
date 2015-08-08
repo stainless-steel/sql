@@ -15,7 +15,7 @@ pub struct SelectFrom {
 impl SelectFrom {
     /// Create a `SELECT FROM` statement.
     #[inline]
-    pub fn new<T: ToString>(table: T) -> SelectFrom {
+    pub fn new<T: ToString>(table: T) -> Self {
         SelectFrom::default().table(table)
     }
 
