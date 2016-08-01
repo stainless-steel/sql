@@ -2,7 +2,7 @@
 
 use Result;
 use grammar::definition::Column;
-use grammar::{Expression, Operation};
+use grammar::{Condition, Expression, Operation};
 
 /// A `LIKE` operation.
 #[derive(Debug)]
@@ -12,6 +12,13 @@ pub struct Like(Box<Expression>, String);
 pub trait Likable {
     /// Set a matcher.
     fn like<T: ToString>(self, T) -> Like;
+}
+
+impl Condition for Like {
+    #[inline]
+    fn compile(&self) -> Result<String> {
+        Operation::compile(self)
+    }
 }
 
 impl Operation for Like {

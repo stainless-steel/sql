@@ -69,26 +69,27 @@ impl Buffer {
     }
 }
 
-impl<'l> Expression for &'l str {
-    #[inline]
-    fn compile(&self) -> Result<String> {
-        Ok(self.to_string())
-    }
+macro_rules! string {
+    ($($kind:ty),*) => (
+        $(
+            impl<'l> $kind for &'l str {
+                #[inline]
+                fn compile(&self) -> Result<String> {
+                    Ok(self.to_string())
+                }
+            }
+
+            impl $kind for String {
+                #[inline]
+                fn compile(&self) -> Result<String> {
+                    Ok(self.clone())
+                }
+            }
+        )*
+    );
 }
 
-impl Expression for String {
-    #[inline]
-    fn compile(&self) -> Result<String> {
-        Ok(self.clone())
-    }
-}
-
-impl<T: Operation> Condition for T {
-    #[inline]
-    fn compile(&self) -> Result<String> {
-        Operation::compile(self)
-    }
-}
+string!(Clause, Condition, Definition, Expression, Operation, Statement);
 
 macro_rules! some(
     ($option:expr, $name:expr) => (
