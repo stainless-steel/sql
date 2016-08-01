@@ -44,5 +44,5 @@ will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 [doc]: https://stainless-steel.github.io/sql
 [status-img]: https://travis-ci.org/stainless-steel/sql.svg?branch=master
 [status-url]: https://travis-ci.org/stainless-steel/sql
-[version-img]: http://stainless-steel.github.io/images/crates.svg
+[version-img]: https://img.shields.io/crates/v/sql.svg
 [version-url]: https://crates.io/crates/sql
