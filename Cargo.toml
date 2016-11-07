@@ -1,9 +1,9 @@
 [package]
 name = "sql"
-version = "0.4.0"
+version = "0.4.1"
 license = "Apache-2.0/MIT"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 description = "The package provides a constructor of SQL statements."
-documentation = "https://stainless-steel.github.io/sql"
+documentation = "https://docs.rs/sql"
 homepage = "https://github.com/stainless-steel/sql"
 repository = "https://github.com/stainless-steel/sql"

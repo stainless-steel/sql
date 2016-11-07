@@ -2,7 +2,7 @@
 
 The package provides a constructor of SQL statements.
 
-## [Documentation][doc]
+## [Documentation][documentation]
 
 ## Example
 
@@ -41,7 +41,7 @@ Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 
-[doc]: https://stainless-steel.github.io/sql
+[documentation]: https://docs.rs/sql
 [status-img]: https://travis-ci.org/stainless-steel/sql.svg?branch=master
 [status-url]: https://travis-ci.org/stainless-steel/sql
 [version-img]: https://img.shields.io/crates/v/sql.svg
