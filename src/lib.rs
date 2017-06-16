@@ -58,7 +58,7 @@ pub trait Typable where Self: Sized {
     type Output;
 
     /// Set the type.
-    fn kind(mut self, value: Type) -> Self::Output;
+    fn kind(self, value: Type) -> Self::Output;
 
     /// Set the type to `Binary`.
     #[inline]
@@ -106,15 +106,6 @@ impl error::Error for Error {
 macro_rules! raise(
     ($message:expr) => (
         return Err(::Error($message.to_string()));
-    );
-);
-
-macro_rules! ok(
-    ($result:expr) => (
-        match $result {
-            Ok(result) => result,
-            Err(error) => raise!(error),
-        }
     );
 );
 
