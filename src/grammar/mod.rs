@@ -70,7 +70,7 @@ impl Buffer {
 }
 
 macro_rules! string {
-    ($($kind:ty),*) => (
+    ($($kind:path),*) => (
         $(
             impl<'l> $kind for &'l str {
                 #[inline]
