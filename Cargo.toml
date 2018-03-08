@@ -10,3 +10,6 @@ description = "The package provides a constructor of SQL statements."
 documentation = "https://docs.rs/sql"
 homepage = "https://github.com/stainless-steel/sql"
 repository = "https://github.com/stainless-steel/sql"
+readme = "README.md"
+categories = ["database"]
+keywords = ["database"]
