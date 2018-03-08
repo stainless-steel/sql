@@ -1,8 +1,6 @@
-# SQL [![Version][version-img]][version-url] [![Status][status-img]][status-url]
+# SQLite [![Package][package-img]][package-url] [![Documentation][documentation-img]][documentation-url] [![Build][build-img]][build-url]
 
 The package provides a constructor of SQL statements.
-
-## [Documentation][documentation]
 
 ## Example
 
@@ -41,8 +39,9 @@ Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 
-[documentation]: https://docs.rs/sql
-[status-img]: https://travis-ci.org/stainless-steel/sql.svg?branch=master
-[status-url]: https://travis-ci.org/stainless-steel/sql
-[version-img]: https://img.shields.io/crates/v/sql.svg
-[version-url]: https://crates.io/crates/sql
+[build-img]: https://travis-ci.org/stainless-steel/sql.svg?branch=master
+[build-url]: https://travis-ci.org/stainless-steel/sql
+[documentation-img]: https://docs.rs/sql/badge.svg
+[documentation-url]: https://docs.rs/sql
+[package-img]: https://img.shields.io/crates/v/sql.svg
+[package-url]: https://crates.io/crates/sql
